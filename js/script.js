@@ -18,7 +18,6 @@ class Personajes {
   morir() {
     this.estado = "muerto"
   }
-
 }
 
 class Rey extends Personajes {
@@ -153,3 +152,60 @@ function ordenarTipoEdad(personajes) {
   return personajesOrdenados;
 }
 
+clonePersonaje(personajes);
+
+function clonePersonaje(personajes) {
+  let dummy = document.querySelector(".personaje-dummy").cloneNode(true);
+  dummy.classList.remove("personaje-dummy");
+
+
+  personajes.map(function (element) {
+    dummy.querySelector("h2.nombre").textContent = element.nombre;
+    dummy.querySelector(".info>ul>li").textContent = "Edad: " + element.edad + " años";
+    element.estado ? dummy.querySelector(".fa-thumbs-down").setAttribute("hidden", true) : dummy.querySelector(".fa-thumbs-up").setAttribute("hidden", true);
+
+    element.estado ? dummy.querySelector("img").classList.add("reves") : dummy.querySelector("img").classList.remove("reves");
+
+    const nombreFoto = element.nombre.split(" ", 1);
+    dummy.querySelector("img").setAttribute("src", "img/" + nombreFoto[0].toLowerCase() + ".jpg");
+    dummy.querySelector("img").setAttribute("alt", element.nombre);
+
+    dummy.querySelector(".personaje-overlay>ul").children[0].innerHTML = "Años de reinado: ";
+    dummy.querySelector(".personaje-overlay>ul").children[1].innerHTML = "Arma: ";
+    dummy.querySelector(".personaje-overlay>ul").children[2].innerHTML = "Destreza: ";
+    dummy.querySelector(".personaje-overlay>ul").children[3].innerHTML = "Peloteo: ";
+    dummy.querySelector(".personaje-overlay>ul").children[4].innerHTML = "Asesora a: ";
+    dummy.querySelector(".personaje-overlay>ul").children[5].innerHTML = "Sirve a: ";
+    switch (element.cargo) {
+      case "Rey":
+        dummy.querySelector(".personaje-overlay>ul").children[0].innerHTML = "Años de reinado: " + element.anyosReinado;
+
+        dummy.querySelector(".emoji").innerHTML = "👑";
+        break;
+      case "Luchador":
+        dummy.querySelector(".personaje-overlay>ul").children[1].innerHTML = "Arma: " + element.arma;
+        dummy.querySelector(".personaje-overlay>ul").children[2].innerHTML = "Destreza: " + element.destreza;
+
+        dummy.querySelector(".emoji").innerHTML = "🗡";
+        break;
+      case "Escudero":
+        dummy.querySelector(".personaje-overlay>ul").children[3].innerHTML = "Peloteo: " + element.pelotsimo;
+        dummy.querySelector(".personaje-overlay>ul").children[5].innerHTML = "Sirve a: " + element.personajeSirvee;
+
+        dummy.querySelector(".emoji").innerHTML = "🛡";
+        break;
+      case "Asesor":
+        dummy.querySelector(".personaje-overlay>ul").children[4].innerHTML = "Asesora a: " + element.personajeAsesora;
+
+        dummy.querySelector(".emoji").innerHTML = "🎓";
+        break;
+      default:
+        break;
+    }
+    console.log(dummy);
+    debugger;
+
+  })
+
+  console.log(dummy);
+}
