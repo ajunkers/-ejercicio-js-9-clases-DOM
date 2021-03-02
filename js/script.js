@@ -4,7 +4,6 @@ class Personajes {
   edad;
   estado = "vivo";
   serie = "Juego de Tronos";
-  cargo;
 
   constructor(nombreP, familiaP, edadP) {
     this.nombre = nombreP;
@@ -16,8 +15,9 @@ class Personajes {
     return "Comunicando";
   }
   morir() {
-    this.estado = "muerto"
+    this.estado = "muerto";
   }
+
 }
 
 class Rey extends Personajes {
@@ -26,8 +26,7 @@ class Rey extends Personajes {
   constructor(anyosReinadoP, nombreP, familiaP, edadP) {
     super()
     this.anyosReinado = anyosReinadoP;
-    this.cargo = "Rey"
-    this.nombre = nombreP
+    this.nombre = nombreP;
     this.edad = edadP;
     this.familia = familiaP;
   }
@@ -38,24 +37,35 @@ class Rey extends Personajes {
 
 class Luchador extends Personajes {
   arma;
-  destreza;
-  constructor(armaP, nombreP, familiaP, edadP, destrezaP) {
+
+  #destreza;
+  constructor(armaP, nombreP, familiaP, edadP, destrezaP){
     super()
     this.arma = armaP;
-    this.cargo = "Luchador"
-    this.nombre = nombreP
+    this.nombre = nombreP;
     this.edad = edadP;
     this.familia = familiaP;
-    this.destreza = destrezaP;
+    this.#destreza = this.controlarDestreza(destrezaP);
   }
-  set destreza(destreza) {
-    if (destreza > 10) {
-      this.destreza = 10;
+
+  set destreza(destreza){
+    this.#destreza = this.controlarDestreza(destreza)
+  }
+
+  get destreza(){
+    return this.#destreza;
+  }
+
+  controlarDestreza(destreza) {
+    let resDestreza = 0;
+    if(destreza > 10){
+      resDestreza = 10;
     } else if (destreza < 0) {
-      this.destreza = 0
+      resDestreza = 0
     } else {
-      this.destreza = destreza;
+      resDestreza = destreza;
     }
+    return resDestreza;
   }
 
   comunicar() {
@@ -74,17 +84,20 @@ class Asesor extends Personajes {
     this.edad = edadP;
     this.familia = familiaP;
   }
-  comunicar() {
-    return "No sé por qué, pero creo que voy a morir pronto"
+
+  comunicar(){
+    return "No sé por qué, pero creo que voy a morir pronto";
+
   }
 }
 
 class Escudero extends Personajes {
   personajeSirve;
-  gradoPelotismo;
+  #gradoPelotismo;
 
   constructor(personajeSirveP, gradoPelotismoP, nombreP, familiaP, edadP) {
     super()
+
     this.personajeSirve = personajeSirveP.nombre;
     this.gradoPelotismo = gradoPelotismoP;
     this.cargo = "Escudero";
@@ -93,64 +106,40 @@ class Escudero extends Personajes {
     this.familia = familiaP;
   }
 
-  comunicar() {
-    return "Soy un loser"
+
+  comunicar(){
+    return "Soy un loser";
   }
 
-  set gradoPelotismo(pelotsimo) {
-    if (pelotsimo > 10) {
-      this.gradoPelotismo = 10;
-    } else if (pelotsimo < 0) {
-      this.gradoPelotismo = 0
+  set gradoPelotismo(pelotsimo){
+   this.#gradoPelotismo = this.controlarPelotismo(pelotsimo);
+  }
+
+  get gradoPelotismo(){
+    return this.#gradoPelotismo;
+  }
+
+  controlarPelotismo(pelotismo) {
+    let resPelotsimo = 0;
+     if(pelotismo > 10){
+      resPelotsimo = 10;
+    } else if (pelotismo < 0) {
+      resPelotsimo = 0;
     } else {
-      this.gradoPelotismo = pelotsimo;
+      resPelotsimo = pelotismo;
     }
+    return resPelotsimo;
   }
 
 }
 
 let jofrey = new Rey(3, "Joffrey Baratheon", "Baratheon", 20);
-let jamie = new Luchador("Bazoca", "Jamie Lannister", "Lanister", 20, 5);
+let jamie = new Luchador("Bazoca", "Jaime Lannister", "Lanister", 20, 5);
 let bronn = new Escudero(jamie, 9, "bronn", "sin familia", 60);
 let daenerys = new Luchador("dragones", "Daenerys Targaryen", "Targaryen", 28, 10);
 let tyrion = new Asesor(daenerys, "Tyrion Lannister", "Lannister", 36)
 
 const personajes = [jofrey, jamie, bronn, daenerys, tyrion];
-
-//mensajeLuchadores(personajes);
-
-function mensajeLuchadores(personajes) {
-  const luchadores = personajes.filter(elemento => elemento.cargo === "Luchador");
-
-  return luchadores.map(elemento => elemento.comunicar());
-}
-
-console.log(personajes[0].serie);
-console.log("");
-
-function mensajes(personajes) {
-
-  personajes.map(elemento => console.log(elemento.comunicar()));
-}
-
-mensajes(personajes);
-
-jamie.morir();
-tyrion.morir();
-
-function ordenarTipoEdad(personajes) {
-  const personajesOrdenados = personajes.sort(function (a, b) {
-    if (a.cargo > b.cargo) return -1;
-    if (b.cargo > a.cargo) return 1;
-
-    if (a.edad > b.edad) return 1;
-    if (b.edad > a.edad) return -1;
-
-    return 0;
-  });
-
-  return personajesOrdenados;
-}
 
 clonePersonaje(personajes);
 
@@ -171,31 +160,44 @@ function clonePersonaje(personajes) {
       const nombreFoto = element.nombre.split(" ", 1);
       dummy.querySelector("img").src = "img/" + nombreFoto[0].toLowerCase() + ".jpg";
       dummy.querySelector("img").alt = element.nombre;
+      
+  personajes.map(function (element) {
+    dummy.querySelector(".accion:last-child")
+      .addEventListener("click", () => { matarPersonajeEvent(i, cardsInterval, personajeDumy); });
+    dummy.querySelector(".accion:first-child")
+      .addEventListener("click", () => { hablarPersonaje(i); });
+    dummy.querySelector("h2.nombre").textContent = element.nombre;
+    dummy.querySelector(".info>ul>li").textContent = "Edad: " + element.edad + " años";
+    element.estado ? dummy.querySelector(".fa-thumbs-down").setAttribute("hidden", true) : dummy.querySelector(".fa-thumbs-up").setAttribute("hidden", true);
 
-      switch (element.cargo) {
-        case "Rey":
-          dummy.querySelector(".reinado").textContent = "Años de reinado: " + element.anyosReinado;
+    const nombreFoto = element.nombre.split(" ", 1);
 
-          dummy.querySelector(".emoji").textContent = "👑";
-          break;
-        case "Luchador":
-          dummy.querySelector(".arma").textContent = "Arma: " + element.arma;
-          dummy.querySelector(".destreza").textContent = "Destreza: " + element.destreza;
+    switch (element.cargo) {
+      case "Rey":
+        dummy.querySelector(".personaje-overlay>ul").children[0].innerHTML = "Años de reinado: " + element.anyosReinado;
 
-          dummy.querySelector(".emoji").textContent = "🗡";
-          break;
-        case "Escudero":
-          dummy.querySelector(".peloteo").textContent = "Peloteo: " + element.gradoPelotismo;
-          dummy.querySelector(".sirve").textContent = "Sirve a: " + element.personajeSirve;
+        dummy.querySelector(".emoji").innerHTML = "👑";
+        break;
+      case "Luchador":
+        dummy.querySelector(".personaje-overlay>ul").children[1].innerHTML = "Arma: " + element.arma;
+        dummy.querySelector(".personaje-overlay>ul").children[2].innerHTML = "Destreza: " + element.destreza;
 
-          dummy.querySelector(".emoji").textContent = "🛡";
-          break;
-        case "Asesor":
-          dummy.querySelector(".asesora").textContent = "Asesora a: " + element.personajeAsesora;
+        dummy.querySelector(".emoji").innerHTML = "🗡";
+        break;
+      case "Escudero":
+        dummy.querySelector(".personaje-overlay>ul").children[3].innerHTML = "Peloteo: " + element.pelotsimo;
+        dummy.querySelector(".personaje-overlay>ul").children[5].innerHTML = "Sirve a: " + element.personajeSirvee;
 
-          dummy.querySelector(".emoji").textContent = "🎓";
-          break;
-      }
+        dummy.querySelector(".emoji").innerHTML = "🛡";
+        break;
+      case "Asesor":
+        dummy.querySelector(".personaje-overlay>ul").children[4].innerHTML = "Asesora a: " + element.personajeAsesora;
+
+        dummy.querySelector(".emoji").innerHTML = "🎓";
+        break;
+      default:
+        break;
+    }
 
       document.querySelector(".personajes").append(dummy);
 
@@ -204,3 +206,29 @@ function clonePersonaje(personajes) {
   });
 
 }
+
+const matarPersonajeEvent = (i, cardsInterval, personajeDumy) => {
+  if (personajes[i].estado === "vivo") {
+    clearInterval(cardsInterval);
+    limpiarListaPersonajesDom(personajeDumy);
+    personajes[i].morir();
+    personajesDom();
+  }
+};
+
+const hablarPersonaje = (i) => {
+  const comunicacionesNode = document.querySelector(".comunicaciones");
+  comunicacionesNode.querySelector("p").textContent = personajes[i].comunicar();
+  comunicacionesNode.querySelector("img").src = `../img/${personajes[i].nombre.toLowerCase().split(" ")[0]}.jpg`;
+  comunicacionesNode.querySelector("img").alt = `${personajes[i].nombre} de juego de tronos`;
+  comunicacionesNode.classList.add("on");
+  setTimeout(() => {
+    comunicacionesNode.classList.remove("on");
+  }, 2000);
+};
+
+const limpiarListaPersonajesDom = (personajeDumy) => {
+  const personajesListDom = document.querySelector(".personajes");
+  personajesListDom.innerHTML = "";
+  personajesListDom.append(personajeDumy);
+};
