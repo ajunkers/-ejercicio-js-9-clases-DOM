@@ -68,7 +68,7 @@ class Asesor extends Personajes {
 
   constructor(personajeAsesoraP, nombreP, familiaP, edadP) {
     super()
-    this.personajeAsesora = personajeAsesoraP.cargo;
+    this.personajeAsesora = personajeAsesoraP.nombre;
     this.cargo = "Asesor"
     this.nombre = nombreP
     this.edad = edadP;
@@ -85,7 +85,7 @@ class Escudero extends Personajes {
 
   constructor(personajeSirveP, gradoPelotismoP, nombreP, familiaP, edadP) {
     super()
-    this.personajeSirve = personajeSirveP.cargo;
+    this.personajeSirve = personajeSirveP.nombre;
     this.gradoPelotismo = gradoPelotismoP;
     this.cargo = "Escudero";
     this.nombre = nombreP;
@@ -155,57 +155,52 @@ function ordenarTipoEdad(personajes) {
 clonePersonaje(personajes);
 
 function clonePersonaje(personajes) {
-  let dummy = document.querySelector(".personaje-dummy").cloneNode(true);
-  dummy.classList.remove("personaje-dummy");
-
-
+  let contador = 0;
   personajes.map(function (element) {
-    dummy.querySelector("h2.nombre").textContent = element.nombre;
-    dummy.querySelector(".info>ul>li").textContent = "Edad: " + element.edad + " años";
-    element.estado ? dummy.querySelector(".fa-thumbs-down").setAttribute("hidden", true) : dummy.querySelector(".fa-thumbs-up").setAttribute("hidden", true);
+    contador += 1;
+    setTimeout(function () {
+      let dummy = document.querySelector(".personaje-dummy").cloneNode(true);
+      dummy.classList.remove("personaje-dummy");
 
-    element.estado ? dummy.querySelector("img").classList.add("reves") : dummy.querySelector("img").classList.remove("reves");
+      dummy.querySelector("h2.nombre").textContent = element.nombre;
+      dummy.querySelector(".edad").textContent = "Edad: " + element.edad + " años";
+      element.estado === "vivo" ? dummy.querySelector(".fa-thumbs-down").hidden = true : dummy.querySelector(".fa-thumbs-up").hidden = true;
 
-    const nombreFoto = element.nombre.split(" ", 1);
-    dummy.querySelector("img").setAttribute("src", "img/" + nombreFoto[0].toLowerCase() + ".jpg");
-    dummy.querySelector("img").setAttribute("alt", element.nombre);
+      element.estado === "vivo" ? dummy.querySelector("img").classList.remove("reves") : dummy.querySelector("img").classList.add("reves");
 
-    dummy.querySelector(".personaje-overlay>ul").children[0].innerHTML = "Años de reinado: ";
-    dummy.querySelector(".personaje-overlay>ul").children[1].innerHTML = "Arma: ";
-    dummy.querySelector(".personaje-overlay>ul").children[2].innerHTML = "Destreza: ";
-    dummy.querySelector(".personaje-overlay>ul").children[3].innerHTML = "Peloteo: ";
-    dummy.querySelector(".personaje-overlay>ul").children[4].innerHTML = "Asesora a: ";
-    dummy.querySelector(".personaje-overlay>ul").children[5].innerHTML = "Sirve a: ";
-    switch (element.cargo) {
-      case "Rey":
-        dummy.querySelector(".personaje-overlay>ul").children[0].innerHTML = "Años de reinado: " + element.anyosReinado;
+      const nombreFoto = element.nombre.split(" ", 1);
+      dummy.querySelector("img").src = "img/" + nombreFoto[0].toLowerCase() + ".jpg";
+      dummy.querySelector("img").alt = element.nombre;
 
-        dummy.querySelector(".emoji").innerHTML = "👑";
-        break;
-      case "Luchador":
-        dummy.querySelector(".personaje-overlay>ul").children[1].innerHTML = "Arma: " + element.arma;
-        dummy.querySelector(".personaje-overlay>ul").children[2].innerHTML = "Destreza: " + element.destreza;
+      switch (element.cargo) {
+        case "Rey":
+          dummy.querySelector(".reinado").textContent = "Años de reinado: " + element.anyosReinado;
 
-        dummy.querySelector(".emoji").innerHTML = "🗡";
-        break;
-      case "Escudero":
-        dummy.querySelector(".personaje-overlay>ul").children[3].innerHTML = "Peloteo: " + element.pelotsimo;
-        dummy.querySelector(".personaje-overlay>ul").children[5].innerHTML = "Sirve a: " + element.personajeSirvee;
+          dummy.querySelector(".emoji").textContent = "👑";
+          break;
+        case "Luchador":
+          dummy.querySelector(".arma").textContent = "Arma: " + element.arma;
+          dummy.querySelector(".destreza").textContent = "Destreza: " + element.destreza;
 
-        dummy.querySelector(".emoji").innerHTML = "🛡";
-        break;
-      case "Asesor":
-        dummy.querySelector(".personaje-overlay>ul").children[4].innerHTML = "Asesora a: " + element.personajeAsesora;
+          dummy.querySelector(".emoji").textContent = "🗡";
+          break;
+        case "Escudero":
+          dummy.querySelector(".peloteo").textContent = "Peloteo: " + element.gradoPelotismo;
+          dummy.querySelector(".sirve").textContent = "Sirve a: " + element.personajeSirve;
 
-        dummy.querySelector(".emoji").innerHTML = "🎓";
-        break;
-      default:
-        break;
-    }
-    console.log(dummy);
-    debugger;
+          dummy.querySelector(".emoji").textContent = "🛡";
+          break;
+        case "Asesor":
+          dummy.querySelector(".asesora").textContent = "Asesora a: " + element.personajeAsesora;
 
-  })
+          dummy.querySelector(".emoji").textContent = "🎓";
+          break;
+      }
 
-  console.log(dummy);
+      document.querySelector(".personajes").append(dummy);
+
+    }, 1000 * contador);
+
+  });
+
 }
