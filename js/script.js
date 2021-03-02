@@ -78,8 +78,9 @@ class Asesor extends Personajes {
 
   constructor(personajeAsesoraP, nombreP, familiaP, edadP) {
     super()
-    this.personajeAsesora = personajeAsesoraP;
-    this.nombre = nombreP;
+    this.personajeAsesora = personajeAsesoraP.nombre;
+    this.cargo = "Asesor"
+    this.nombre = nombreP
     this.edad = edadP;
     this.familia = familiaP;
   }
@@ -96,8 +97,10 @@ class Escudero extends Personajes {
 
   constructor(personajeSirveP, gradoPelotismoP, nombreP, familiaP, edadP) {
     super()
-    this.personajeSirve = personajeSirveP;
-    this.#gradoPelotismo = this.controlarPelotismo(gradoPelotismoP);
+
+    this.personajeSirve = personajeSirveP.nombre;
+    this.gradoPelotismo = gradoPelotismoP;
+    this.cargo = "Escudero";
     this.nombre = nombreP;
     this.edad = edadP;
     this.familia = familiaP;
@@ -141,10 +144,23 @@ const personajes = [jofrey, jamie, bronn, daenerys, tyrion];
 clonePersonaje(personajes);
 
 function clonePersonaje(personajes) {
-  let dummy = document.querySelector(".personaje-dummy").cloneNode(true);
-  dummy.classList.remove("personaje-dummy");
+  let contador = 0;
+  personajes.map(function (element) {
+    contador += 1;
+    setTimeout(function () {
+      let dummy = document.querySelector(".personaje-dummy").cloneNode(true);
+      dummy.classList.remove("personaje-dummy");
 
+      dummy.querySelector("h2.nombre").textContent = element.nombre;
+      dummy.querySelector(".edad").textContent = "Edad: " + element.edad + " años";
+      element.estado === "vivo" ? dummy.querySelector(".fa-thumbs-down").hidden = true : dummy.querySelector(".fa-thumbs-up").hidden = true;
 
+      element.estado === "vivo" ? dummy.querySelector("img").classList.remove("reves") : dummy.querySelector("img").classList.add("reves");
+
+      const nombreFoto = element.nombre.split(" ", 1);
+      dummy.querySelector("img").src = "img/" + nombreFoto[0].toLowerCase() + ".jpg";
+      dummy.querySelector("img").alt = element.nombre;
+      
   personajes.map(function (element) {
     dummy.querySelector(".accion:last-child")
       .addEventListener("click", () => { matarPersonajeEvent(i, cardsInterval, personajeDumy); });
@@ -154,18 +170,8 @@ function clonePersonaje(personajes) {
     dummy.querySelector(".info>ul>li").textContent = "Edad: " + element.edad + " años";
     element.estado ? dummy.querySelector(".fa-thumbs-down").setAttribute("hidden", true) : dummy.querySelector(".fa-thumbs-up").setAttribute("hidden", true);
 
-    element.estado ? dummy.querySelector("img").classList.add("reves") : dummy.querySelector("img").classList.remove("reves");
-
     const nombreFoto = element.nombre.split(" ", 1);
-    dummy.querySelector("img").setAttribute("src", "img/" + nombreFoto[0].toLowerCase() + ".jpg");
-    dummy.querySelector("img").setAttribute("alt", element.nombre);
 
-    dummy.querySelector(".personaje-overlay>ul").children[0].innerHTML = "Años de reinado: ";
-    dummy.querySelector(".personaje-overlay>ul").children[1].innerHTML = "Arma: ";
-    dummy.querySelector(".personaje-overlay>ul").children[2].innerHTML = "Destreza: ";
-    dummy.querySelector(".personaje-overlay>ul").children[3].innerHTML = "Peloteo: ";
-    dummy.querySelector(".personaje-overlay>ul").children[4].innerHTML = "Asesora a: ";
-    dummy.querySelector(".personaje-overlay>ul").children[5].innerHTML = "Sirve a: ";
     switch (element.cargo) {
       case "Rey":
         dummy.querySelector(".personaje-overlay>ul").children[0].innerHTML = "Años de reinado: " + element.anyosReinado;
@@ -192,10 +198,12 @@ function clonePersonaje(personajes) {
       default:
         break;
     }
-    console.log(dummy);
-    debugger;
 
-  })
+      document.querySelector(".personajes").append(dummy);
+
+    }, 1000 * contador);
+
+  });
 
 }
 
